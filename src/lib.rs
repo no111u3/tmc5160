@@ -25,7 +25,7 @@ pub struct Tmc5160<SPI, CS> {
     cs: CS,
 }
 
-impl<SPI, CS, E> Tle5012<SPI, CS>
+impl<SPI, CS, E> Tmc5160<SPI, CS>
 where
     SPI: Transfer<u8, Error = E> + Write<u8, Error = E>,
     CS: OutputPin,
