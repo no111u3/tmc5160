@@ -1,0 +1,30 @@
+[package]
+name = "tmc5160"
+version = "0.0.1"
+categories = [
+    "embedded",
+    "hardware-support",
+    "no-std",
+]
+authors = ["Boris Vinogradov <no111u3@gmail.com>"]
+description = "TMC5160 Trinamic integrated stepper motor controller"
+edition = "2018"
+keywords = ["embedded-hal-driver", "motor-controller", "stepper"]
+repository = "https://github.com/no111u3/tmc5160"
+readme = "README.md"
+license = "Apache-2.0"
+
+[dependencies]
+
+[dependencies.embedded-hal]
+version = "0.2.2"
+features = ["unproven"]
+
+[profile.dev]
+incremental = false
+codegen-units = 1
+
+[profile.release]
+codegen-units = 1 # better optimizations
+debug = true # symbols are nice and they don't increase the size on Flash
+lto = true # better optimizations
