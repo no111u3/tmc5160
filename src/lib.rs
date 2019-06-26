@@ -113,7 +113,16 @@ impl Address for Registers {
 }
 
 /// Data Exchange packet
+#[derive(Debug)]
 pub struct DataPacket(u8, u32);
+
+use core::fmt;
+
+impl fmt::Display for DataPacket {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "0x{:x}:0x{:x}", self.0, self.1)
+    }
+}
 
 impl<SPI, CS, E> Tmc5160<SPI, CS>
 where
