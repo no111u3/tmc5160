@@ -16,7 +16,7 @@ use embedded_hal::{
 /// SPI mode
 pub const MODE: Mode = Mode {
     phase: Phase::CaptureOnSecondTransition,
-    polarity: Polarity::IdleLow,
+    polarity: Polarity::IdleHigh,
 };
 
 /// TMC5160 driver
