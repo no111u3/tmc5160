@@ -20,6 +20,20 @@ license = "Apache-2.0"
 version = "0.2.2"
 features = ["unproven"]
 
+[dev-dependencies.stm32f7x7-hal]
+version = "0.2.1"
+
+[dev-dependencies.stm32f7]
+features = ["stm32f7x7", "rt"]
+version = "0.7.0"
+
+[dev-dependencies]
+cortex-m = "0.6.0"
+cortex-m-rt = "0.6.7"
+cortex-m-semihosting = "0.3.1"
+panic-semihosting = "0.5.0"
+serialio = "0.1.2"
+
 [profile.dev]
 incremental = false
 codegen-units = 1
