@@ -36,7 +36,7 @@ pub trait Address {
     fn addr(self) -> u8;
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 #[allow(non_camel_case_types)]
 pub enum Registers {
     GCONF = 0x00,
@@ -136,7 +136,17 @@ where
 
     pub fn read_register<T>(&mut self, reg: T) -> Result<DataPacket, Error<E>>
     where
-        T: Address
+        T: Address + Copy
+    {
+        // Process cmd to read, return previous(dummy) state
+        let _dummy = self.read_io(reg)?;
+        // Repeat cmd to read, return state
+        self.read_io(reg)
+    }
+
+    fn read_io<T>(&mut self, reg: T) -> Result<DataPacket, Error<E>>
+    where
+        T: Address + Copy
     {
         self.cs.set_low().ok();
         
@@ -155,7 +165,7 @@ where
 
     pub fn write_register<T>(&mut self, reg: T, data: u32) -> Result<DataPacket, Error<E>>
     where
-        T: Address
+        T: Address + Copy
     {
         self.cs.set_low().ok();
 

@@ -54,25 +54,8 @@ fn main() -> ! {
         Ok(conf) => {sprintln!(in_out, "Stepper driver conf is {}", conf);},
         Err(error) => {sprintln!(in_out, "Error for read status is {:?}", error);},
     }
-    
-    match stepper_driver.read_register(tmc5160::Registers::GCONF) {
-        Ok(conf) => {sprintln!(in_out, "Stepper driver conf is {}", conf);},
-        Err(error) => {sprintln!(in_out, "Error for read status is {:?}", error);},
-    }
 
     match stepper_driver.read_register(tmc5160::Registers::GSTAT) {
-        Ok(status) => {
-            sprintln!(in_out, "Stepper driver status is {}", status);},
-        Err(error) => {sprintln!(in_out, "Error for read status is {:?}", error);},
-    }
-    
-    match stepper_driver.read_register(tmc5160::Registers::GSTAT) {
-        Ok(status) => {
-            sprintln!(in_out, "Stepper driver status is {}", status);},
-        Err(error) => {sprintln!(in_out, "Error for read status is {:?}", error);},
-    }
-    
-    match stepper_driver.read_register(tmc5160::Registers::INP_OUT) {
         Ok(status) => {
             sprintln!(in_out, "Stepper driver status is {}", status);},
         Err(error) => {sprintln!(in_out, "Error for read status is {:?}", error);},
