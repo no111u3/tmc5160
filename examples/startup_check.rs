@@ -8,9 +8,14 @@
 extern crate panic_semihosting;
 
 use cortex_m::asm;
-use stm32f7x7_hal::{stm32, prelude::*, serial::{Serial, config}, spi::Spi};
-use serialio::{SerialIO, sprintln};
 use cortex_m_rt::entry;
+use serialio::{sprintln, SerialIO};
+use stm32f7x7_hal::{
+    prelude::*,
+    serial::{config, Serial},
+    spi::Spi,
+    stm32,
+};
 
 use tmc5160::{self, Tmc5160};
 
@@ -46,25 +51,41 @@ fn main() -> ! {
     let mut nss = gpioa.pa4.into_push_pull_output();
     nss.set_high();
 
-    let spi = Spi::spi1(p.SPI1, (sck, miso, mosi), tmc5160::MODE, 500.khz().into(), clocks);
+    let spi = Spi::spi1(
+        p.SPI1,
+        (sck, miso, mosi),
+        tmc5160::MODE,
+        500.khz().into(),
+        clocks,
+    );
 
     let mut stepper_driver = Tmc5160::new(spi, nss).unwrap();
-    
+
     match stepper_driver.read_register(tmc5160::Registers::GCONF) {
-        Ok(conf) => {sprintln!(in_out, "Stepper driver conf is {}", conf);},
-        Err(error) => {sprintln!(in_out, "Error for read status is {:?}", error);},
+        Ok(conf) => {
+            sprintln!(in_out, "Stepper driver conf is {}", conf);
+        }
+        Err(error) => {
+            sprintln!(in_out, "Error for read status is {:?}", error);
+        }
     }
 
     match stepper_driver.read_register(tmc5160::Registers::GSTAT) {
         Ok(status) => {
-            sprintln!(in_out, "Stepper driver status is {}", status);},
-        Err(error) => {sprintln!(in_out, "Error for read status is {:?}", error);},
+            sprintln!(in_out, "Stepper driver status is {}", status);
+        }
+        Err(error) => {
+            sprintln!(in_out, "Error for read status is {:?}", error);
+        }
     }
-    
+
     match stepper_driver.read_register(tmc5160::Registers::INP_OUT) {
         Ok(status) => {
-            sprintln!(in_out, "Stepper driver status is {}", status);},
-        Err(error) => {sprintln!(in_out, "Error for read status is {:?}", error);},
+            sprintln!(in_out, "Stepper driver status is {}", status);
+        }
+        Err(error) => {
+            sprintln!(in_out, "Error for read status is {:?}", error);
+        }
     }
 
     asm::bkpt();

@@ -10,7 +10,7 @@
 use embedded_hal::{
     blocking::spi::{Transfer, Write},
     digital::v2::OutputPin,
-    spi::{Mode, Phase, Polarity}
+    spi::{Mode, Phase, Polarity},
 };
 
 /// SPI mode
@@ -25,11 +25,10 @@ pub struct Tmc5160<SPI, CS> {
     cs: CS,
 }
 
-
 #[derive(Debug)]
 pub enum Error<E> {
     /// SPI bus error
-    Spi(E)
+    Spi(E),
 }
 
 pub trait Address {
@@ -103,7 +102,7 @@ pub enum Registers {
     PWMCONF = 0x70,
     PWMSCALE = 0x71,
     PWM_AUTO = 0x72,
-    LOST_STEPS = 0x73
+    LOST_STEPS = 0x73,
 }
 
 impl Address for Registers {
@@ -136,7 +135,7 @@ where
 
     pub fn read_register<T>(&mut self, reg: T) -> Result<DataPacket, Error<E>>
     where
-        T: Address + Copy
+        T: Address + Copy,
     {
         // Process cmd to read, return previous(dummy) state
         let _dummy = self.read_io(reg)?;
@@ -146,37 +145,37 @@ where
 
     fn read_io<T>(&mut self, reg: T) -> Result<DataPacket, Error<E>>
     where
-        T: Address + Copy
+        T: Address + Copy,
     {
         self.cs.set_low().ok();
-        
+
         let mut buffer = [reg.addr() & 0x7f];
-        
+
         self.spi.transfer(&mut buffer).map_err(Error::Spi)?;
 
-        let mut ret_val:[u8; 4] = [0; 4];
-        
+        let mut ret_val: [u8; 4] = [0; 4];
+
         self.spi.transfer(&mut ret_val).map_err(Error::Spi)?;
-        
+
         self.cs.set_high().ok();
-        
+
         Ok(DataPacket(buffer[0], u32::from_be_bytes(ret_val)))
     }
 
     pub fn write_register<T>(&mut self, reg: T, data: u32) -> Result<DataPacket, Error<E>>
     where
-        T: Address + Copy
+        T: Address + Copy,
     {
         self.cs.set_low().ok();
 
         let mut buffer = [reg.addr() | 0x80];
-        
+
         self.spi.transfer(&mut buffer).map_err(Error::Spi)?;
-        
+
         let mut val = data.to_be_bytes();
 
         self.spi.transfer(&mut val).map_err(Error::Spi)?;
-        
+
         self.cs.set_high().ok();
 
         Ok(DataPacket(buffer[0], u32::from_be_bytes(val)))
