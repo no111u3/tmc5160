@@ -56,8 +56,8 @@ impl<SPI, CS, E> Tmc5160<SPI, CS>
         CS: OutputPin,
 {
     /// Create a new driver from a SPI peripheral and a NCS pin
-    pub fn new(spi: SPI, cs: CS) -> Result<Self, E> {
-        Ok(Tmc5160 { spi, cs })
+    pub fn new(spi: SPI, cs: CS) -> Self {
+        Tmc5160 { spi, cs }
     }
 
     pub fn read_register<T>(&mut self, reg: T) -> Result<DataPacket, Error<E>>
