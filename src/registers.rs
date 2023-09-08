@@ -140,6 +140,47 @@ impl Address for Registers {
     }
 }
 
+/// SPI status
+#[derive(Debug, Default, Clone, Copy)]
+#[allow(dead_code)]
+pub struct SpiStatus {
+    pub status_stop_r: bool,
+    pub status_stop_l: bool,
+    pub position_reached: bool,
+    pub velocity_reached: bool,
+    pub standstill: bool,
+    pub sg2: bool,
+    pub driver_error: bool,
+    pub reset_flag: bool,
+}
+impl SpiStatus {
+    pub fn from(value: u8) -> Self {
+        Self {
+            status_stop_r: (value & 0b10000000) >> 7 == 1,
+            status_stop_l: (value & 0b1000000) >> 6 == 1,
+            position_reached: (value & 0b1000000) >> 5 == 1,
+            velocity_reached: (value & 0b100000) >> 4 == 1,
+            standstill: (value & 0b10000) >> 3 == 1,
+            sg2: (value & 0b1000) >> 2 == 1,
+            driver_error: (value & 0b10 >> 1) == 1,
+            reset_flag: (value & 0b1) == 1,
+        }
+    }
+
+    pub fn to_val(&self) -> u8 {
+        let mut val = 0;
+        val |= (self.status_stop_r as u8) << 7;
+        val |= (self.status_stop_l as u8) << 7;
+        val |= (self.position_reached as u8) << 7;
+        val |= (self.velocity_reached as u8) << 7;
+        val |= (self.standstill as u8) << 7;
+        val |= (self.sg2 as u8) << 7;
+        val |= (self.driver_error as u8) << 7;
+        val |= (self.reset_flag as u8)<< 7;
+        val
+    }
+}
+
 
 /// Ramp Modes
 #[allow(dead_code)]
