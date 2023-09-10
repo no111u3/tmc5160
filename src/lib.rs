@@ -34,7 +34,7 @@ pub enum Error<E> {
     /// SPI bus error
     Spi(E),
     /// Pin error
-    PinError(E),
+    PinError,
 }
 
 /// Data Exchange packet
@@ -89,8 +89,8 @@ pub struct Tmc5160<SPI, CS, EN> {
 impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     where
         SPI: Transfer<u8, Error=E> + Write<u8, Error=E>,
-        CS: OutputPin<Error=E>,
-        EN: OutputPin<Error=E>,
+        CS: OutputPin,
+        EN: OutputPin,
 {
     /// Create a new driver from a SPI peripheral and a NCS pin
     pub fn new(spi: SPI, cs: CS) -> Self {
@@ -200,7 +200,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     /// enable the motor if the EN pin was specified
     pub fn enable(&mut self) -> Result<(), Error<E>> {
         if let Some(pin) = &mut self.en {
-            pin.set_low().map_err(Error::PinError)
+            pin.set_low().map_err(|_| Error::PinError)
         } else {
             Ok(())
         }
@@ -209,7 +209,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     /// disable the motor if the EN pin was specified
     pub fn disable(&mut self) -> Result<(), Error<E>> {
         if let Some(pin) = &mut self.en {
-            pin.set_high().map_err(Error::PinError)
+            pin.set_high().map_err(|_| Error::PinError)
         } else {
             Ok(())
         }
