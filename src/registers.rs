@@ -2,7 +2,9 @@
 use modular_bitfield::bitfield;
 use modular_bitfield::prelude::*;
 
+/// Implementation to convert register enum to u8 address
 pub trait Address {
+    /// convert register enum to u8 address
     fn addr(self) -> u8;
 }
 
@@ -20,7 +22,7 @@ pub enum Registers {
     /// UART slave configuration
     SLAVECONF = 0x03,
     /// Read input / write output pins
-    IO_INPUT_OUTPUT = 0x04,
+    IOIN = 0x04,
     /// Position comparison register
     X_COMPARE = 0x05,
     /// OTP programming register
@@ -34,7 +36,7 @@ pub enum Registers {
     /// Driver configuration
     DRV_CONF = 0x0A,
     /// Global scaling of motor current
-    GLOBAL_SCALER = 0x0B,
+    GLOBALSCALER = 0x0B,
     /// Offset calibration results
     OFFSET_READ = 0x0C,
 
@@ -62,9 +64,9 @@ pub enum Registers {
     /// Motor start velocity
     VSTART = 0x23,
     /// First acceleration between VSTART and V1
-    A_1 = 0x24,
+    A1 = 0x24,
     /// First acceleration/deceleration phase target velocity
-    V_1 = 0x25,
+    V1 = 0x25,
     /// Second acceleration between V1 and VMAX
     AMAX = 0x26,
     /// Target velocity in velocity mode
@@ -73,7 +75,7 @@ pub enum Registers {
     DMAX = 0x28,
     /// Deceleration between V1 and VSTOP
     /// Attention:  Do  not  set  0  in  positioning  mode, even if V1=0!
-    D_1 = 0x2A,
+    D1 = 0x2A,
     /// Motor stop velocity
     /// Attention: Set VSTOP > VSTART!
     /// Attention:  Do  not  set  0  in  positioning  mode, minimum 10 recommend!
@@ -329,17 +331,18 @@ pub struct IHoldIRun {
     /// number of clock cycles after motion
     pub i_hold_delay: B4,
     #[skip] _c: B4,
+    #[skip] _d: B8,
 }
 
 /// RAMPMODE Register
 #[allow(dead_code)]
 pub enum RampMode {
-    PositioningMode = 0x00,
     /// using all A, D and V parameters
-    VelocityModePos = 0x01,
+    PositioningMode = 0x00,
     /// positive VMAX, using AMAX acceleration
-    VelocityModeNeg = 0x02,
+    VelocityModePos = 0x01,
     /// negative VMAX, using AMAX acceleration
+    VelocityModeNeg = 0x02,
     /// velocity remains unchanged, unless stop event occurs
     HoldMode = 0x03,
 }

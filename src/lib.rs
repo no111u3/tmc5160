@@ -20,7 +20,7 @@ use embedded_hal::{
 
 use crate::registers::*;
 
-mod registers;
+pub mod registers;
 
 /// SPI mode
 pub const MODE: Mode = Mode {
@@ -135,6 +135,17 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         self
     }
 
+    fn speed_from_hz(&mut self, speed_hz: f32) -> u32 {
+        return (speed_hz / (self._clock / 16_777_216.0) * self._step_count) as u32;
+    }
+
+    fn accel_from_hz(&mut self, accel_hz_per_s: f32) -> u32 {
+        return (accel_hz_per_s / (self._clock * self._clock)
+            * (512.0 * 256.0)
+            * 16_777_216.0
+            * self._step_count) as u32;
+    }
+
     /// read a specified register
     pub fn read_register<T>(&mut self, reg: T) -> Result<DataPacket, Error<E>>
         where
@@ -185,18 +196,6 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         Ok(DataPacket { status: SpiStatus::from_bytes([buffer[0]]), data: u32::from_be_bytes(*val) })
     }
 
-
-    fn speed_from_hz(&mut self, speed_hz: f32) -> u32 {
-        return (speed_hz / (self._clock / 16_777_216.0) * self._step_count) as u32;
-    }
-
-    fn accel_from_hz(&mut self, accel_hz_per_s: f32) -> u32 {
-        return (accel_hz_per_s / (self._clock * self._clock)
-            * (512.0 * 256.0)
-            * 16_777_216.0
-            * self._step_count) as u32;
-    }
-
     /// enable the motor if the EN pin was specified
     pub fn enable(&mut self) -> Result<(), Error<E>> {
         if let Some(pin) = &mut self.en {
@@ -215,10 +214,123 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         }
     }
 
+    /// clear G_STAT register
+    pub fn clear_g_stat(&mut self) -> Result<DataPacket, Error<E>> {
+        let mut value = 0b111_u32.to_be_bytes();
+        self.write_register(Registers::GCONF, &mut value)
+    }
+
     /// write value to G_CONF register
     pub fn update_g_conf(&mut self) -> Result<DataPacket, Error<E>> {
         let mut value = self.g_conf.into_bytes();
         self.write_register(Registers::GCONF, &mut value)
+    }
+
+    /// write value to CHOP_CONF register
+    pub fn update_chop_conf(&mut self) -> Result<DataPacket, Error<E>> {
+        let mut value = self.chop_conf.into_bytes();
+        self.write_register(Registers::CHOPCONF, &mut value)
+    }
+
+    /// write value to IHOLD_IRUN register
+    pub fn update_ihold_irun(&mut self) -> Result<DataPacket, Error<E>> {
+        let mut value = self.ihold_irun.into_bytes();
+        self.write_register(Registers::IHOLD_IRUN, &mut value)
+    }
+
+    /// write value to PWM_CONF register
+    pub fn update_pwm_conf(&mut self) -> Result<DataPacket, Error<E>> {
+        let mut value = self.pwm_conf.into_bytes();
+        self.write_register(Registers::PWMCONF, &mut value)
+    }
+
+    /// write value to GLOBALSCALER register
+    pub fn set_global_scaler(&mut self, val: u32) -> Result<DataPacket, Error<E>> {
+        let mut value = val.to_be_bytes();
+        self.write_register(Registers::GLOBALSCALER, &mut value)
+    }
+
+    /// write value to TPOWERDOWN register
+    pub fn set_tpowerdown(&mut self, val: u32) -> Result<DataPacket, Error<E>> {
+        let mut value = val.to_be_bytes();
+        self.write_register(Registers::TPOWERDOWN, &mut value)
+    }
+
+    /// write value to TPWMTHRS register
+    pub fn set_tpwmthrs(&mut self, val: u32) -> Result<DataPacket, Error<E>> {
+        let mut value = val.to_be_bytes();
+        self.write_register(Registers::TPWMTHRS, &mut value)
+    }
+
+    /// write value to TCOOLTHRS register
+    pub fn set_tcoolthrs(&mut self, val: u32) -> Result<DataPacket, Error<E>> {
+        let mut value = val.to_be_bytes();
+        self.write_register(Registers::TCOOLTHRS, &mut value)
+    }
+
+    /// write value to A1 register
+    pub fn set_a1(&mut self, val: u32) -> Result<DataPacket, Error<E>> {
+        let mut value = val.to_be_bytes();
+        self.write_register(Registers::A1, &mut value)
+    }
+
+    /// write value to V1 register
+    pub fn set_v1(&mut self, val: u32) -> Result<DataPacket, Error<E>> {
+        let mut value = val.to_be_bytes();
+        self.write_register(Registers::V1, &mut value)
+    }
+
+    /// write value to AMAX register
+    pub fn set_amax(&mut self, val: u32) -> Result<DataPacket, Error<E>> {
+        let mut value = val.to_be_bytes();
+        self.write_register(Registers::AMAX, &mut value)
+    }
+
+    /// write value to VMAX register
+    pub fn set_vmax(&mut self, val: u32) -> Result<DataPacket, Error<E>> {
+        let mut value = val.to_be_bytes();
+        self.write_register(Registers::VMAX, &mut value)
+    }
+
+    /// write value to DMAX register
+    pub fn set_dmax(&mut self, val: u32) -> Result<DataPacket, Error<E>> {
+        let mut value = val.to_be_bytes();
+        self.write_register(Registers::DMAX, &mut value)
+    }
+
+    /// write value to D1 register
+    pub fn set_d1(&mut self, val: u32) -> Result<DataPacket, Error<E>> {
+        let mut value = val.to_be_bytes();
+        self.write_register(Registers::D1, &mut value)
+    }
+
+    /// write value to VSTART register
+    pub fn set_vstart(&mut self, val: u32) -> Result<DataPacket, Error<E>> {
+        let mut value = val.to_be_bytes();
+        self.write_register(Registers::VSTART, &mut value)
+    }
+
+    /// write value to VSTOP register
+    pub fn set_vstop(&mut self, val: u32) -> Result<DataPacket, Error<E>> {
+        let mut value = val.to_be_bytes();
+        self.write_register(Registers::VSTOP, &mut value)
+    }
+
+    /// write value to PWM_AUTO register
+    pub fn set_pwm_auto(&mut self, val: u32) -> Result<DataPacket, Error<E>> {
+        let mut value = val.to_be_bytes();
+        self.write_register(Registers::PWM_AUTO, &mut value)
+    }
+
+    /// write value to RAMPMODE register
+    pub fn set_rampmode(&mut self, val: RampMode) -> Result<DataPacket, Error<E>> {
+        let mut value = (val as u32).to_be_bytes();
+        self.write_register(Registers::VSTOP, &mut value)
+    }
+
+    /// read offset register
+    pub fn read_offset(&mut self) -> Result<DataPacket, Error<E>> {
+        self.read_register(Registers::OFFSET_READ)
     }
 
     /// set the position to 0 / home
@@ -276,8 +388,8 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         let mut val = a_max.to_be_bytes();
         self.write_register(Registers::AMAX, &mut val)?;
         self.write_register(Registers::DMAX, &mut val)?;
-        self.write_register(Registers::A_1, &mut val)?;
-        let packet = self.write_register(Registers::D_1, &mut val);
+        self.write_register(Registers::A1, &mut val)?;
+        let packet = self.write_register(Registers::D1, &mut val);
         if let Ok(p) = &packet {
             self.status = p.status;
         }
