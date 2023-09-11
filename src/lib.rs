@@ -333,6 +333,21 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         self.read_register(Registers::OFFSET_READ)
     }
 
+    /// read TSTEP register
+    pub fn read_tstep(&mut self) -> Result<DataPacket, Error<E>> {
+        self.read_register(Registers::TSTEP)
+    }
+
+    /// read DRV_STATUS register
+    pub fn read_drv_status(&mut self) -> Result<DataPacket, Error<E>> {
+        self.read_register(Registers::DRV_STATUS)
+    }
+
+    /// read GSTAT register
+    pub fn read_gstat(&mut self) -> Result<DataPacket, Error<E>> {
+        self.read_register(Registers::GSTAT)
+    }
+    
     /// set the position to 0 / home
     pub fn set_home(&mut self) -> Result<DataPacket, Error<E>> {
         let mut val = 0_u32.to_be_bytes();
