@@ -153,7 +153,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         where
             T: Address + Copy,
     {
-        // Process cmd to read, return previous(dummy) state
+        // Process cmd to read, return previous (dummy) state
         let _dummy = self.read_io(reg)?;
         // Repeat cmd to read, return state
         self.read_io(reg)

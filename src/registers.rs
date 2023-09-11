@@ -148,7 +148,7 @@ impl Address for Registers {
 /// SPISTATUS
 #[allow(dead_code)]
 #[derive(Clone, Copy)]
-#[bitfield]
+#[bitfield(bits = 8)]
 pub struct SpiStatus {
     pub status_stop_r: bool,
     pub status_stop_l: bool,
@@ -164,7 +164,7 @@ pub struct SpiStatus {
 /// DRVSTATUS
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
-#[bitfield]
+#[bitfield(bits = 32)]
 pub struct DrvStatus {
     pub standstill: bool,
     pub olb: bool,
@@ -187,7 +187,7 @@ pub struct DrvStatus {
 /// GCONF Register
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
-#[bitfield]
+#[bitfield(bits = 32)]
 pub struct GConf {
     pub recalibrate: bool,
     pub faststandstill: bool,
@@ -207,18 +207,18 @@ pub struct GConf {
     pub stop_enable: bool,
     pub direct_mode: bool,
     #[skip] test_mode: bool,
-    #[skip] __: B14,
+    #[skip] _fill: B14,
 }
 
 /// GSTAT Register
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
-#[bitfield]
+#[bitfield(bits = 32)]
 pub struct GStat {
     pub reset: bool,
     pub drv_err: bool,
     pub uv_cp: bool,
-    #[skip] __: B5,
+    #[skip] _fill: B29,
 }
 
 // IFCNT Register is disabled in SPI mode
@@ -226,18 +226,18 @@ pub struct GStat {
 /// NODECONF Register
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
-#[bitfield]
+#[bitfield(bits = 32)]
 pub struct NodeConf {
     pub nodeaddr: u8,
     pub senddelay: B4,
-    #[skip] __: B4,
+    #[skip] _fill: B20,
 }
 
 
 /// IOIN Register
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
-#[bitfield]
+#[bitfield(bits = 32)]
 pub struct IoIn {
     pub refl_step: bool,
     pub refr_dir: bool,
@@ -248,35 +248,38 @@ pub struct IoIn {
     pub sd_mode: bool,
     pub swcomp_in: bool,
     pub version: u8,
+    #[skip] _fill: B16,
 }
 
 
 /// OTP_PROG Register
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
-#[bitfield]
+#[bitfield(bits = 32)]
 pub struct OtpProg {
     pub otpbit: B3,
     pub otpbyte: B2,
     #[skip] __: B3,
     pub otpmagic: u8,
+    #[skip] _fill: B16,
 }
 
 /// OTPREAD
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
-#[bitfield]
+#[bitfield(bits = 32)]
 pub struct OtpRead {
     pub otp_fclktrim: B5,
     pub otp_s2_level: bool,
     pub otp_bbm: bool,
     pub otp_tbl: bool,
+    #[skip] _fill: B24,
 }
 
 /// SHORT_CONF
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
-#[bitfield]
+#[bitfield(bits = 32)]
 pub struct ShortConf {
     pub s2vs_level: B4,
     #[skip] _a: B4,
@@ -284,13 +287,13 @@ pub struct ShortConf {
     #[skip] _b: B4,
     pub shortfilter: B2,
     pub shortdelay: bool,
-    #[skip] _c: B5,
+    #[skip] _fill: B13,
 }
 
 /// DrvConfRegister
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
-#[bitfield]
+#[bitfield(bits = 32)]
 pub struct DrvConf {
     /// "Break Before Make" duration specified in ns (0 to 24)
     pub bbm_time: B4,
@@ -304,7 +307,7 @@ pub struct DrvConf {
     pub drv_strength: B2,
     /// filter time constant
     pub filt_isense: B2,
-    #[skip] _c: B2,
+    #[skip] _fill: B10,
 }
 
 /// OFFSET_READ
@@ -320,7 +323,7 @@ pub struct OffsetRead {
 /// IHOLD_IRUN Register
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
-#[bitfield]
+#[bitfield(bits = 32)]
 pub struct IHoldIRun {
     /// motor hold current
     pub i_hold: B5,
@@ -351,7 +354,7 @@ pub enum RampMode {
 /// SW_MODE Register
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
-#[bitfield]
+#[bitfield(bits = 32)]
 pub struct SwMode {
     pub stop_l_enable: bool,
     pub stop_r_enable: bool,
@@ -365,14 +368,14 @@ pub struct SwMode {
     pub en_latch_encoder: bool,
     pub sg_stop: bool,
     pub en_softstop: bool,
-    #[skip] __: B4,
+    #[skip] _fill: B20,
 }
 
 
 /// RAMOSTAT Register
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
-#[bitfield]
+#[bitfield(bits = 32)]
 pub struct RampStat {
     pub status_stop_l: bool,
     pub status_stop_r: bool,
@@ -388,14 +391,14 @@ pub struct RampStat {
     pub t_zerowait_active: bool,
     pub second_move: bool,
     pub status_sg: bool,
-    #[skip] __: B2,
+    #[skip] _fill: B18,
 }
 
 
 /// ENCMODE Register
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
-#[bitfield]
+#[bitfield(bits = 32)]
 pub struct EncMode {
     pub pol_a: bool,
     pub pol_b: bool,
@@ -408,14 +411,14 @@ pub struct EncMode {
     pub clr_enc_x: bool,
     pub latch_x_act: bool,
     pub enc_sel_decimal: bool,
-    #[skip] __: B5,
+    #[skip] _fill: B21,
 }
 
 
 /// MSLUTSEL Register
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
-#[bitfield]
+#[bitfield(bits = 32)]
 pub struct MsLutSel {
     pub w0: B2,
     pub w1: B2,
@@ -429,7 +432,7 @@ pub struct MsLutSel {
 /// CHOPFCONF Register
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
-#[bitfield]
+#[bitfield(bits = 32)]
 pub struct ChopConf {
     pub toff: B4,
     pub hstr: B3,
@@ -460,7 +463,7 @@ impl Default for ChopConf {
 /// COOLCONF Register
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
-#[bitfield]
+#[bitfield(bits = 32)]
 pub struct CoolConf {
     pub semin: B4,
     #[skip] _a: B1,
@@ -479,7 +482,7 @@ pub struct CoolConf {
 /// PWMCONF Register
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
-#[bitfield]
+#[bitfield(bits = 32)]
 pub struct PwmConf {
     pub pwm_ofs: u8,
     pub pwm_grad: u8,
