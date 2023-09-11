@@ -1,4 +1,4 @@
-//! A platform agnostic driver to iterface with the TMC5160 (Trinamic integrated stepper motor controller)
+//! A platform agnostic driver to interface with the TMC5160 (Trinamic integrated stepper motor controller)
 //!
 //! This driver was built using [`embedded-hal`] traits.
 //!
