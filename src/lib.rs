@@ -125,13 +125,13 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         self
     }
 
-    /// specify clock speed of the Tmc5160
+    /// specify clock speed of the Tmc5160 (Default is 12 MHz)
     pub fn clock(mut self, clock: f32) -> Self {
         self._clock = clock;
         self
     }
 
-    /// specify step count of the motor
+    /// specify step count of the motor (Default is 256)
     pub fn step_count(mut self, step_count: f32) -> Self {
         self._step_count = step_count;
         self
