@@ -39,8 +39,10 @@ pub enum Error<E> {
 
 /// Data Exchange packet
 pub struct DataPacket {
-    status: SpiStatus,
-    data: u32,
+    /// Status returned from last communication
+    pub status: SpiStatus,
+    /// Data received from TMC5160
+    pub data: u32,
 }
 
 impl fmt::Display for DataPacket {
@@ -347,7 +349,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     pub fn read_gstat(&mut self) -> Result<DataPacket, Error<E>> {
         self.read_register(Registers::GSTAT)
     }
-    
+
     /// set the position to 0 / home
     pub fn set_home(&mut self) -> Result<DataPacket, Error<E>> {
         let mut val = 0_u32.to_be_bytes();
