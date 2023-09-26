@@ -360,6 +360,13 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         Ok(GStat::from_bytes(packet.data.to_be_bytes()))
     }
 
+    /// read GCONF register
+    pub fn read_gconf(&mut self) -> Result<GConf, Error<E>> {
+        let packet = self.read_register(Registers::GCONF)?;
+        self.status = packet.status;
+        Ok(GConf::from_bytes(packet.data.to_be_bytes()))
+    }
+
     /// read DRV_STATUS register
     pub fn read_ramp_status(&mut self) -> Result<RampStat, Error<E>> {
         let packet = self.read_register(Registers::RAMP_STAT)?;
