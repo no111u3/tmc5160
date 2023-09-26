@@ -14,11 +14,16 @@ Put this into your `cargo.toml`:
 ```toml
 [dependencies]
 tmc5160 = { git = "https://github.com/hacknus/tmc5160-rs" }
+# required for the register configs to_u32() function
+modular-bitfield-to-value = {git = "https://github.com/hacknus/modular-bitfield-to-value"}
 ```
 Add the following imports:
 ```rust
 use tmc5160::registers::*;
 use tmc5160::{DataPacket, Error, Tmc5160};
+
+// required for the to_u32() function.
+use modular_bitfield_to_value::ToValue;
 ```
 
 Configure the SPI bus in the `main()` function as follows:

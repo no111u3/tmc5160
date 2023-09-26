@@ -7,6 +7,9 @@
 
 extern crate panic_semihosting;
 
+// required for the to_u32() function.
+use modular_bitfield_to_value::ToValue;
+
 use cortex_m::asm;
 use cortex_m_rt::entry;
 use serialio::{sprintln, SerialIO};
