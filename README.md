@@ -4,14 +4,47 @@
 [![Docs](https://docs.rs/tmc5160/badge.svg)](https://docs.rs/tmc5160)
 [![Rust](https://github.com/hacknus/tmc5160-rs/actions/workflows/rust.yml/badge.svg)](https://github.com/hacknus/tmc5160-rs/actions/workflows/rust.yml)
 
-Platform agnostic rust driver for the [TMC5160](https://www.trinamic.com/fileadmin/assets/Products/ICs_Documents/TMC5160A_datasheet_rev1.18.pdf) Trinamic integrated stepper motor controller.
+This is a platform agnostic rust driver for the [TMC5160](https://www.trinamic.com/fileadmin/assets/Products/ICs_Documents/TMC5160A_datasheet_rev1.18.pdf) Trinamic integrated stepper motor controller.  
+Fully supported in `#![no_std]` environments.
 
-To implement this driver, consult the example:
-
+## Example
+An example can be found in `examples/startup_check.rs`.  
+To implement this driver, consult the example:  
+Put this into your `cargo.toml`:
+```toml
+[dependencies]
+tmc5160 = { git = "https://github.com/hacknus/tmc5160-rs" }
+```
+Add the following imports:
 ```rust
 use tmc5160::registers::*;
 use tmc5160::{DataPacket, Error, Tmc5160};
+```
 
+Configure the SPI bus in the `main()` function as follows:
+```rust
+let spi = Spi::spi1(
+        p.SPI1,
+        (sck, miso, mosi),
+        tmc5160::MODE,
+        500.khz().into(),
+        clocks,
+    );
+```
+which essentially is the same as:
+```rust
+let spi = dp.SPI1.spi(
+    (sclk, sdo, sdi),
+    spiMode {
+        polarity: Polarity::IdleHigh,
+        phase: Phase::CaptureOnSecondTransition,
+    },
+    10.kHz(),
+    &clocks,
+);
+```
+and to use the driver, implement the driver as shown below:
+```rust
 {
     // set up spi ...
 
