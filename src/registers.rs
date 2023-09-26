@@ -1,12 +1,16 @@
 //! Registers of the TMC5160 
+extern crate modular_bitfield_to_value;
+
 use modular_bitfield::bitfield;
 use modular_bitfield::prelude::*;
+use modular_bitfield_to_value::ToValue;
 
 /// Implementation to convert register enum to u8 address
 pub trait Address {
     /// convert register enum to u8 address
     fn addr(self) -> u8;
 }
+
 
 /// Register addresses of the TMC5160
 #[derive(Debug, Copy, Clone)]
@@ -165,6 +169,7 @@ pub struct SpiStatus {
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
+#[derive(ToValue)]
 pub struct DrvStatus {
     pub standstill: bool,
     pub olb: bool,
@@ -188,6 +193,7 @@ pub struct DrvStatus {
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
+#[derive(   ToValue)]
 pub struct GConf {
     pub recalibrate: bool,
     pub faststandstill: bool,
@@ -214,6 +220,7 @@ pub struct GConf {
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
+#[derive(ToValue)]
 pub struct GStat {
     pub reset: bool,
     pub drv_err: bool,
@@ -227,6 +234,7 @@ pub struct GStat {
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
+#[derive(ToValue)]
 pub struct NodeConf {
     pub nodeaddr: u8,
     pub senddelay: B4,
@@ -238,6 +246,7 @@ pub struct NodeConf {
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
+#[derive(ToValue)]
 pub struct IoIn {
     pub refl_step: bool,
     pub refr_dir: bool,
@@ -256,6 +265,7 @@ pub struct IoIn {
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
+#[derive(ToValue)]
 pub struct OtpProg {
     pub otpbit: B3,
     pub otpbyte: B2,
@@ -268,6 +278,7 @@ pub struct OtpProg {
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
+#[derive(ToValue)]
 pub struct OtpRead {
     pub otp_fclktrim: B5,
     pub otp_s2_level: bool,
@@ -280,6 +291,7 @@ pub struct OtpRead {
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
+#[derive(ToValue)]
 pub struct ShortConf {
     pub s2vs_level: B4,
     #[skip] _a: B4,
@@ -294,6 +306,7 @@ pub struct ShortConf {
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
+#[derive(ToValue)]
 pub struct DrvConf {
     /// "Break Before Make" duration specified in ns (0 to 24)
     pub bbm_time: B4,
@@ -324,6 +337,7 @@ pub struct OffsetRead {
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
+#[derive(ToValue)]
 pub struct IHoldIRun {
     /// motor hold current
     pub i_hold: B5,
@@ -355,6 +369,7 @@ pub enum RampMode {
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
+#[derive(ToValue)]
 pub struct SwMode {
     pub stop_l_enable: bool,
     pub stop_r_enable: bool,
@@ -376,6 +391,7 @@ pub struct SwMode {
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
+#[derive(ToValue)]
 pub struct RampStat {
     pub status_stop_l: bool,
     pub status_stop_r: bool,
@@ -399,6 +415,7 @@ pub struct RampStat {
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
+#[derive(ToValue)]
 pub struct EncMode {
     pub pol_a: bool,
     pub pol_b: bool,
@@ -419,6 +436,7 @@ pub struct EncMode {
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
+#[derive(ToValue)]
 pub struct MsLutSel {
     pub w0: B2,
     pub w1: B2,
@@ -433,6 +451,7 @@ pub struct MsLutSel {
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
+#[derive(ToValue)]
 pub struct ChopConf {
     pub toff: B4,
     pub hstr: B3,
@@ -464,6 +483,7 @@ impl Default for ChopConf {
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
+#[derive(ToValue)]
 pub struct CoolConf {
     pub semin: B4,
     #[skip] _a: B1,
@@ -483,6 +503,7 @@ pub struct CoolConf {
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
+#[derive(ToValue)]
 pub struct PwmConf {
     pub pwm_ofs: u8,
     pub pwm_grad: u8,
