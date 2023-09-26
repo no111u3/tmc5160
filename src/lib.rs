@@ -222,6 +222,12 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         self.write_register(Registers::GCONF, &mut value)
     }
 
+    /// write value to SW_MODE register
+    pub fn update_sw_mode(&mut self) -> Result<DataPacket, Error<E>> {
+        let mut value = self.sw_mode.into_bytes();
+        self.write_register(Registers::SW_MODE, &mut value)
+    }
+
     /// write value to G_CONF register
     pub fn update_g_conf(&mut self) -> Result<DataPacket, Error<E>> {
         let mut value = self.g_conf.into_bytes();
