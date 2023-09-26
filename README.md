@@ -37,7 +37,14 @@ use tmc5160::{DataPacket, Error, Tmc5160};
         .with_recalibrate(true)
         .with_faststandstill(true)
         .with_en_pwm_mode(true);
-    stepper_driver.update_g_conf()?;
+    match stepper_driver.update_g_conf(){
+        Ok(packet) => {
+            sprintln!(in_out, "SPI status has been updated: {}", packet.status);
+        }
+        Err(error) => {
+            sprintln!(in_out, "Error for read status is {:?}", error);
+        }
+    }
 
     match stepper_driver.read_drv_status() {
         Ok(status) => {
