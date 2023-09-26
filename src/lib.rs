@@ -331,34 +331,36 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     }
 
     /// read offset register
-    pub fn read_offset(&mut self) -> Result<DataPacket, Error<E>> {
-        self.read_register(Registers::OFFSET_READ)
+    pub fn read_offset(&mut self) -> Result<u32, Error<E>> {
+        self.read_register(Registers::OFFSET_READ).map(|packet| packet.data)
     }
 
     /// read TSTEP register
-    pub fn read_tstep(&mut self) -> Result<DataPacket, Error<E>> {
-        self.read_register(Registers::TSTEP)
+    pub fn read_tstep(&mut self) -> Result<u32, Error<E>> {
+        self.read_register(Registers::TSTEP).map(|packet| packet.data)
     }
 
     /// read DRV_STATUS register
-    pub fn read_drv_status(&mut self) -> Result<DataPacket, Error<E>> {
-        self.read_register(Registers::DRV_STATUS)
+    pub fn read_drv_status(&mut self) -> Result<DrvStatus, Error<E>> {
+        let packet = self.read_register(Registers::DRV_STATUS)?;
+        self.status = packet.status;
+        Ok(DrvStatus::from_bytes(packet.data.to_be_bytes()))
     }
 
     /// read GSTAT register
-    pub fn read_gstat(&mut self) -> Result<DataPacket, Error<E>> {
-        self.read_register(Registers::GSTAT)
+    pub fn read_gstat(&mut self) -> Result<GStat, Error<E>> {
+        let packet = self.read_register(Registers::GSTAT)?;
+        self.status = packet.status;
+        Ok(GStat::from_bytes(packet.data.to_be_bytes()))
     }
 
     /// set the position to 0 / home
     pub fn set_home(&mut self) -> Result<DataPacket, Error<E>> {
         let mut val = 0_u32.to_be_bytes();
         self.write_register(Registers::XACTUAL, &mut val)?;
-        let packet = self.write_register(Registers::XTARGET, &mut val);
-        if let Ok(p) = &packet {
-            self.status = p.status;
-        }
-        packet
+        let packet = self.write_register(Registers::XTARGET, &mut val)?;
+        self.status = packet.status;
+        Ok(packet)
     }
 
     /// stop the motor now
@@ -366,25 +368,14 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         self.disable()?;
         let mut val = 0_u32.to_be_bytes();
         self.write_register(Registers::VSTART, &mut val)?;
-        let packet = self.write_register(Registers::VMAX, &mut val);
-        if let Ok(p) = &packet {
-            self.status = p.status;
-        }
-        packet
+        let packet = self.write_register(Registers::VMAX, &mut val)?;
+        self.status = packet.status;
+        Ok(packet)
     }
 
     /// check if the motor is moving
     pub fn is_moving(&mut self) -> Result<bool, Error<E>> {
-        self.get_drv_status().map(|packet| packet.status.standstill())
-    }
-
-    /// get the value of the DRV STATUS register
-    pub fn get_drv_status(&mut self) -> Result<DataPacket, Error<E>> {
-        let packet = self.read_register(Registers::DRV_STATUS);
-        if let Ok(p) = &packet {
-            self.status = p.status;
-        }
-        packet
+        self.read_drv_status().map(|packet| packet.standstill())
     }
 
     /// set the max velocity (VMAX)
@@ -392,11 +383,9 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         self.v_max = velocity;
         let v_max = self.speed_from_hz(velocity);
         let mut val = v_max.to_be_bytes();
-        let packet = self.write_register(Registers::VMAX, &mut val);
-        if let Ok(p) = &packet {
-            self.status = p.status;
-        }
-        packet
+        let packet = self.write_register(Registers::VMAX, &mut val)?;
+        self.status = packet.status;
+        Ok(packet)
     }
 
     /// set the max acceleration (AMAX, DMAX, A1, D1)
@@ -406,11 +395,9 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         self.write_register(Registers::AMAX, &mut val)?;
         self.write_register(Registers::DMAX, &mut val)?;
         self.write_register(Registers::A1, &mut val)?;
-        let packet = self.write_register(Registers::D1, &mut val);
-        if let Ok(p) = &packet {
-            self.status = p.status;
-        }
-        packet
+        let packet = self.write_register(Registers::D1, &mut val)?;
+        self.status = packet.status;
+        Ok(packet)
     }
 
     /// move to a specific location
@@ -418,11 +405,9 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         self.enable()?;
         let target = (target_signed * self._step_count as i32) as u32;
         let mut val = target.to_be_bytes();
-        let packet = self.write_register(Registers::XTARGET, &mut val);
-        if let Ok(p) = &packet {
-            self.status = p.status;
-        }
-        packet
+        let packet = self.write_register(Registers::XTARGET, &mut val)?;
+        self.status = packet.status;
+        Ok(packet)
     }
 
     /// get the current position
