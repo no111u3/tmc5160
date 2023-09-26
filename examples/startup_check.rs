@@ -89,7 +89,7 @@ fn main() -> ! {
             // either use fields of the register
             sprintln!(in_out, "Stepper driver is in standstill: {}", status);
             // or extract the u32 value from the register
-            sprintln!(in_out, "Stepper driver DRV_STATUS register is {}", status.to_u32());
+            sprintln!(in_out, "Stepper driver DRV_STATUS register is {}", status.to_u32().unwrap_or(0));
             sprintln!(in_out, "SPI status has been updated: {}", stepper_driver.status);
         }
         Err(error) => {
@@ -99,7 +99,7 @@ fn main() -> ! {
 
     match stepper_driver.read_gstat() {
         Ok(status) => {
-            sprintln!(in_out, "Stepper GSTAT register is {}", status.to_u32());
+            sprintln!(in_out, "Stepper GSTAT register is {}", status.to_u32().unwrap_or(0));
             sprintln!(in_out, "SPI status has been updated: {}", stepper_driver.status);
         }
         Err(error) => {
