@@ -375,7 +375,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
 
     /// check if the motor is moving
     pub fn is_moving(&mut self) -> Result<bool, Error<E>> {
-        self.read_drv_status().map(|packet| packet.standstill())
+        self.read_drv_status().map(|packet| !packet.standstill())
     }
 
     /// set the max velocity (VMAX)
