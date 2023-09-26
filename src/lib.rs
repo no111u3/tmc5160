@@ -354,6 +354,13 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         Ok(GStat::from_bytes(packet.data.to_be_bytes()))
     }
 
+    /// read DRV_STATUS register
+    pub fn read_ramp_status(&mut self) -> Result<RampStat, Error<E>> {
+        let packet = self.read_register(Registers::RAMP_STAT)?;
+        self.status = packet.status;
+        Ok(RampStat::from_bytes(packet.data.to_be_bytes()))
+    }
+
     /// set the position to 0 / home
     pub fn set_home(&mut self) -> Result<DataPacket, Error<E>> {
         let mut val = 0_u32.to_be_bytes();
@@ -376,6 +383,16 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     /// check if the motor is moving
     pub fn is_moving(&mut self) -> Result<bool, Error<E>> {
         self.read_drv_status().map(|packet| !packet.standstill())
+    }
+
+    /// check if motor is at right limit
+    pub fn is_at_limit_r(&mut self) -> Result<bool, Error<E>> {
+        self.read_ramp_status().map(|packet| packet.status_stop_r())
+    }
+
+    /// check if motor is at left limit
+    pub fn is_at_limit_l(&mut self) -> Result<bool, Error<E>> {
+        self.read_ramp_status().map(|packet| packet.status_stop_l())
     }
 
     /// set the max velocity (VMAX)
