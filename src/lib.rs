@@ -336,6 +336,11 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         self.write_register(Registers::VSTOP, &mut value)
     }
 
+    /// read GLOBALSCALER register
+    pub fn read_global_scaler(&mut self) -> Result<u32, Error<E>> {
+        self.read_register(Registers::GLOBALSCALER).map(|packet| packet.data)
+    }
+
     /// read offset register
     pub fn read_offset(&mut self) -> Result<u32, Error<E>> {
         self.read_register(Registers::OFFSET_READ).map(|packet| packet.data)
