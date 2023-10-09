@@ -164,29 +164,28 @@ pub struct SpiStatus {
     pub reset_flag: bool,
 }
 
-
 /// DRVSTATUS
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
 #[derive(ToValue)]
 pub struct DrvStatus {
-    pub standstill: bool,
-    pub olb: bool,
-    pub ola: bool,
-    pub s2gb: bool,
-    pub s2ga: bool,
-    pub otpw: bool,
-    pub ot: bool,
-    pub stallguard: bool,
-    #[skip] _b: B3,
-    pub cs_actual: B5,
-    pub fsactive: bool,
-    pub stealth: bool,
-    pub s2vsb: bool,
-    pub s2vsa: bool,
-    #[skip] _a: B2,
     pub sg_result: B10,
+    #[skip] _a: B2,
+    pub s2vsa: bool,
+    pub s2vsb: bool,
+    pub stealth: bool,
+    pub fsactive: bool,
+    pub cs_actual: B5,
+    #[skip] _b: B3,
+    pub stallguard: bool,
+    pub ot: bool,
+    pub otpw: bool,
+    pub s2ga: bool,
+    pub s2gb: bool,
+    pub ola: bool,
+    pub olb: bool,
+    pub standstill: bool,
 }
 
 /// GCONF Register
@@ -474,7 +473,7 @@ pub struct ChopConf {
 
 impl Default for ChopConf {
     fn default() -> Self {
-        Self::from_bytes(0x10410150_u32.to_be_bytes())
+        Self::from_bytes(0x10410150_u32.to_le_bytes())
     }
 }
 
@@ -518,6 +517,6 @@ pub struct PwmConf {
 
 impl Default for PwmConf {
     fn default() -> Self {
-        Self::from_bytes(0xC40C001E_u32.to_be_bytes())
+        Self::from_bytes(0xC40C001E_u32.to_le_bytes())
     }
 }
