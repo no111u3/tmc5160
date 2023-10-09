@@ -62,6 +62,7 @@ pub struct Tmc5160<SPI, CS, EN> {
     pub status: SpiStatus,
     _clock: f32,
     _step_count: f32,
+    _en_inverted: bool,
     /// value of the GCONF register
     pub g_conf: GConf,
     /// value of the NODECONF register
@@ -104,6 +105,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
             status: SpiStatus::new(),
             _clock: 12000000.0,
             _step_count: 256.0,
+            _en_inverted: false,
             g_conf: GConf::new(),
             node_conf: NodeConf::new(),
             otp_prog: OtpProg::new(),
@@ -122,6 +124,12 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     /// add an enable pin to the driver
     pub fn en(mut self, en: EN) -> Self {
         self.en = Some(en);
+        self
+    }
+
+    /// invert the enable pin
+    pub fn en_inverted(mut self, inv: bool) -> Self {
+        self._en_inverted = inv;
         self
     }
 
@@ -201,7 +209,11 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     /// enable the motor if the EN pin was specified
     pub fn enable(&mut self) -> Result<(), Error<E>> {
         if let Some(pin) = &mut self.en {
-            pin.set_low().map_err(|_| Error::PinError)
+            if self._en_inverted {
+                pin.set_high().map_err(|_| Error::PinError)
+            } else {
+                pin.set_low().map_err(|_| Error::PinError)
+            }
         } else {
             Ok(())
         }
@@ -210,7 +222,11 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     /// disable the motor if the EN pin was specified
     pub fn disable(&mut self) -> Result<(), Error<E>> {
         if let Some(pin) = &mut self.en {
-            pin.set_high().map_err(|_| Error::PinError)
+            if self._en_inverted {
+                pin.set_low().map_err(|_| Error::PinError)
+            } else {
+                pin.set_high().map_err(|_| Error::PinError)
+            }
         } else {
             Ok(())
         }
