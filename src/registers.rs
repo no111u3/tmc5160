@@ -171,29 +171,29 @@ pub struct SpiStatus {
 #[bitfield(bits = 32)]
 #[derive(ToValue)]
 pub struct DrvStatus {
-    pub sg_result: B10,
-    #[skip] _a: B2,
-    pub s2vsa: bool,
-    pub s2vsb: bool,
-    pub stealth: bool,
-    pub fsactive: bool,
-    pub cs_actual: B5,
-    #[skip] _b: B3,
-    pub stallguard: bool,
-    pub ot: bool,
-    pub otpw: bool,
-    pub s2ga: bool,
-    pub s2gb: bool,
-    pub ola: bool,
-    pub olb: bool,
     pub standstill: bool,
+    pub olb: bool,
+    pub ola: bool,
+    pub s2gb: bool,
+    pub s2ga: bool,
+    pub otpw: bool,
+    pub ot: bool,
+    pub stallguard: bool,
+    #[skip] _b: B3,
+    pub cs_actual: B5,
+    pub fsactive: bool,
+    pub stealth: bool,
+    pub s2vsb: bool,
+    pub s2vsa: bool,
+    #[skip] _a: B2,
+    pub sg_result: B10,
 }
 
 /// GCONF Register
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
-#[derive(ToValue)]
+#[derive(   ToValue)]
 pub struct GConf {
     pub recalibrate: bool,
     pub faststandstill: bool,
