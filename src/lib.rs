@@ -490,7 +490,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     }
 
     /// get the current target position (XTARGET)
-    pub fn get_target(&mut self) -> Result<i32, Error<E>> {
-        self.read_register(Registers::XTARGET).map(|packet| packet.data as i32)
+    pub fn get_target(&mut self) -> Result<f32, Error<E>> {
+        self.read_register(Registers::XTARGET).map(|packet| packet.data as f32 / self._step_count / 400.0)
     }
 }
