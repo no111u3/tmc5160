@@ -27,7 +27,7 @@ fn le_to_be(input: [u8; 4]) -> [u8; 4] {
     for i in 0..4 {
         output[4 - 1 - i] = input[i];
     }
-    input
+    output
 }
 
 /// SPI mode
