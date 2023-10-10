@@ -474,7 +474,7 @@ pub struct ChopConf {
 
 impl Default for ChopConf {
     fn default() -> Self {
-        Self::from_bytes(0x10410150_u32.to_be_bytes())
+        Self::from_bytes(0x10410150_u32.to_le_bytes())
     }
 }
 
@@ -518,6 +518,6 @@ pub struct PwmConf {
 
 impl Default for PwmConf {
     fn default() -> Self {
-        Self::from_bytes(0xC40C001E_u32.to_be_bytes())
+        Self::from_bytes(0xC40C001E_u32.to_le_bytes())
     }
 }
