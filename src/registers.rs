@@ -154,14 +154,14 @@ impl Address for Registers {
 #[derive(Clone, Copy)]
 #[bitfield(bits = 8)]
 pub struct SpiStatus {
-    pub status_stop_r: bool,
-    pub status_stop_l: bool,
-    pub position_reached: bool,
-    pub velocity_reached: bool,
-    pub standstill: bool,
-    pub sg2: bool,
-    pub driver_error: bool,
     pub reset_flag: bool,
+    pub driver_error: bool,
+    pub sg2: bool,
+    pub standstill: bool,
+    pub velocity_reached: bool,
+    pub position_reached: bool,
+    pub status_stop_l: bool,
+    pub status_stop_r: bool,
 }
 
 /// DRVSTATUS
@@ -192,7 +192,7 @@ pub struct DrvStatus {
 #[derive(Clone, Copy)]
 #[allow(dead_code)]
 #[bitfield(bits = 32)]
-#[derive(   ToValue)]
+#[derive(ToValue)]
 pub struct GConf {
     pub recalibrate: bool,
     pub faststandstill: bool,
