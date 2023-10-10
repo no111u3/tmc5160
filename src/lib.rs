@@ -264,6 +264,12 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         self.write_register(Registers::CHOPCONF, &mut value)
     }
 
+    /// write value to COOL_CONF register
+    pub fn update_cool_conf(&mut self) -> Result<DataPacket, Error<E>> {
+        let mut value =  le_to_be(self.cool_conf.into_bytes());
+        self.write_register(Registers::COOLCONF, &mut value)
+    }
+
     /// write value to IHOLD_IRUN register
     pub fn update_ihold_irun(&mut self) -> Result<DataPacket, Error<E>> {
         let mut value =  le_to_be(self.ihold_irun.into_bytes());
