@@ -371,28 +371,28 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     pub fn read_drv_status(&mut self) -> Result<DrvStatus, Error<E>> {
         let packet = self.read_register(Registers::DRV_STATUS)?;
         self.status = packet.status;
-        Ok(DrvStatus::from_bytes(packet.data.to_be_bytes()))
+        Ok(DrvStatus::from_bytes(packet.data.to_le_bytes()))
     }
 
     /// read GSTAT register
     pub fn read_gstat(&mut self) -> Result<GStat, Error<E>> {
         let packet = self.read_register(Registers::GSTAT)?;
         self.status = packet.status;
-        Ok(GStat::from_bytes(packet.data.to_be_bytes()))
+        Ok(GStat::from_bytes(packet.data.to_le_bytes()))
     }
 
     /// read GCONF register
     pub fn read_gconf(&mut self) -> Result<GConf, Error<E>> {
         let packet = self.read_register(Registers::GCONF)?;
         self.status = packet.status;
-        Ok(GConf::from_bytes(packet.data.to_be_bytes()))
+        Ok(GConf::from_bytes(packet.data.to_le_bytes()))
     }
 
     /// read DRV_STATUS register
     pub fn read_ramp_status(&mut self) -> Result<RampStat, Error<E>> {
         let packet = self.read_register(Registers::RAMP_STAT)?;
         self.status = packet.status;
-        Ok(RampStat::from_bytes(packet.data.to_be_bytes()))
+        Ok(RampStat::from_bytes(packet.data.to_le_bytes()))
     }
 
     /// set the position to 0 / home
