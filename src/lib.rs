@@ -468,7 +468,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
 
     /// get the current position
     pub fn get_position(&mut self) -> Result<f32, Error<E>> {
-        self.read_register(Registers::XACTUAL).map(|val| (val.data as i32) as f32 / self._step_count / 400.0)
+        self.read_register(Registers::XACTUAL).map(|val| (val.data as i32) as f32 / self._step_count )
     }
 
     /// set the current position
@@ -491,11 +491,11 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
 
     /// get the set maximum velocity (VMAX)
     pub fn get_velocity_max(&mut self) -> f32 {
-        self.v_max / 400.0
+        self.v_max
     }
 
     /// get the current target position (XTARGET)
     pub fn get_target(&mut self) -> Result<f32, Error<E>> {
-        self.read_register(Registers::XTARGET).map(|packet| packet.data as f32 / self._step_count / 400.0)
+        self.read_register(Registers::XTARGET).map(|packet| packet.data as f32 / self._step_count )
     }
 }
