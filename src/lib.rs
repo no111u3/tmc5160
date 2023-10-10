@@ -22,6 +22,14 @@ use crate::registers::*;
 
 pub mod registers;
 
+fn le_to_be(input: [u8; 4])  -> [u8; 4]{
+    let mut output = [0;4];
+    for i in 0..4 {
+        output[4 - 1 - i] = input[i];
+    }
+    output
+}
+
 /// SPI mode
 pub const MODE: Mode = Mode {
     phase: Phase::CaptureOnSecondTransition,
@@ -240,31 +248,31 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
 
     /// write value to SW_MODE register
     pub fn update_sw_mode(&mut self) -> Result<DataPacket, Error<E>> {
-        let mut value = self.sw_mode.into_bytes();
+        let mut value = le_to_be(self.sw_mode.into_bytes());
         self.write_register(Registers::SW_MODE, &mut value)
     }
 
     /// write value to G_CONF register
     pub fn update_g_conf(&mut self) -> Result<DataPacket, Error<E>> {
-        let mut value = self.g_conf.into_bytes();
+        let mut value =  le_to_be(self.g_conf.into_bytes());
         self.write_register(Registers::GCONF, &mut value)
     }
 
     /// write value to CHOP_CONF register
     pub fn update_chop_conf(&mut self) -> Result<DataPacket, Error<E>> {
-        let mut value = self.chop_conf.into_bytes();
+        let mut value =  le_to_be(self.chop_conf.into_bytes());
         self.write_register(Registers::CHOPCONF, &mut value)
     }
 
     /// write value to IHOLD_IRUN register
     pub fn update_ihold_irun(&mut self) -> Result<DataPacket, Error<E>> {
-        let mut value = self.ihold_irun.into_bytes();
+        let mut value =  le_to_be(self.ihold_irun.into_bytes());
         self.write_register(Registers::IHOLD_IRUN, &mut value)
     }
 
     /// write value to PWM_CONF register
     pub fn update_pwm_conf(&mut self) -> Result<DataPacket, Error<E>> {
-        let mut value = self.pwm_conf.into_bytes();
+        let mut value =  le_to_be(self.pwm_conf.into_bytes());
         self.write_register(Registers::PWMCONF, &mut value)
     }
 
