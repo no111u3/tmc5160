@@ -352,11 +352,6 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         self.write_register(Registers::VSTOP, &mut value)
     }
 
-    /// read GLOBALSCALER register
-    pub fn read_global_scaler(&mut self) -> Result<u32, Error<E>> {
-        self.read_register(Registers::GLOBALSCALER).map(|packet| packet.data)
-    }
-
     /// read offset register
     pub fn read_offset(&mut self) -> Result<u32, Error<E>> {
         self.read_register(Registers::OFFSET_READ).map(|packet| packet.data)
@@ -454,7 +449,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     /// move to a specific location
     pub fn move_to(&mut self, target_signed: i32) -> Result<DataPacket, Error<E>> {
         self.enable()?;
-        let target = (target_signed * self._step_count as i32) as u32;
+        let target = target_signed * self._step_count as i32;
         let mut val = target.to_be_bytes();
         let packet = self.write_register(Registers::XTARGET, &mut val)?;
         self.status = packet.status;
@@ -468,8 +463,8 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
 
     /// set the current position
     pub fn set_position(&mut self, target_signed: i32) -> Result<DataPacket, Error<E>> {
-        let target = target_signed as u32;
-        let mut val = (target * self._step_count as u32).to_be_bytes();
+        let target = target_signed;
+        let mut val = (target * self._step_count as i32).to_be_bytes();
         self.write_register(Registers::XACTUAL, &mut val)
     }
 
