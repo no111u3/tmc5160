@@ -153,6 +153,7 @@ impl Address for Registers {
 #[allow(dead_code)]
 #[derive(Clone, Copy)]
 #[bitfield(bits = 8)]
+#[derive(ToValue)]
 pub struct SpiStatus {
     pub reset_flag: bool,
     pub driver_error: bool,
