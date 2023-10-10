@@ -444,6 +444,15 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         Ok(packet)
     }
 
+    /// set the max velocity (VMAX)
+    pub fn set_velocity_raw(&mut self, velocity: u32) -> Result<DataPacket, Error<E>> {
+        self.v_max = velocity as f32 / self._step_count * (self._clock / 16_777_216.0);
+        let mut val = velocity.to_be_bytes();
+        let packet = self.write_register(Registers::VMAX, &mut val)?;
+        self.status = packet.status;
+        Ok(packet)
+    }
+
     /// set the max acceleration (AMAX, DMAX, A1, D1)
     pub fn set_acceleration(&mut self, acceleration: f32) -> Result<DataPacket, Error<E>> {
         let a_max = self.accel_from_hz(acceleration);
