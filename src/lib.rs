@@ -22,12 +22,12 @@ use crate::registers::*;
 
 pub mod registers;
 
-fn le_to_be(input: [u8; 4])  -> [u8; 4]{
-    let mut output = [0;4];
+fn le_to_be(input: [u8; 4]) -> [u8; 4] {
+    let mut output = [0; 4];
     for i in 0..4 {
         output[4 - 1 - i] = input[i];
     }
-    output
+    input
 }
 
 /// SPI mode
@@ -254,31 +254,31 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
 
     /// write value to G_CONF register
     pub fn update_g_conf(&mut self) -> Result<DataPacket, Error<E>> {
-        let mut value =  le_to_be(self.g_conf.into_bytes());
+        let mut value = le_to_be(self.g_conf.into_bytes());
         self.write_register(Registers::GCONF, &mut value)
     }
 
     /// write value to CHOP_CONF register
     pub fn update_chop_conf(&mut self) -> Result<DataPacket, Error<E>> {
-        let mut value =  le_to_be(self.chop_conf.into_bytes());
+        let mut value = le_to_be(self.chop_conf.into_bytes());
         self.write_register(Registers::CHOPCONF, &mut value)
     }
 
     /// write value to COOL_CONF register
     pub fn update_cool_conf(&mut self) -> Result<DataPacket, Error<E>> {
-        let mut value =  le_to_be(self.cool_conf.into_bytes());
+        let mut value = le_to_be(self.cool_conf.into_bytes());
         self.write_register(Registers::COOLCONF, &mut value)
     }
 
     /// write value to IHOLD_IRUN register
     pub fn update_ihold_irun(&mut self) -> Result<DataPacket, Error<E>> {
-        let mut value =  le_to_be(self.ihold_irun.into_bytes());
+        let mut value = le_to_be(self.ihold_irun.into_bytes());
         self.write_register(Registers::IHOLD_IRUN, &mut value)
     }
 
     /// write value to PWM_CONF register
     pub fn update_pwm_conf(&mut self) -> Result<DataPacket, Error<E>> {
-        let mut value =  le_to_be(self.pwm_conf.into_bytes());
+        let mut value = le_to_be(self.pwm_conf.into_bytes());
         self.write_register(Registers::PWMCONF, &mut value)
     }
 
@@ -491,7 +491,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
 
     /// get the current position
     pub fn get_position(&mut self) -> Result<f32, Error<E>> {
-        self.read_register(Registers::XACTUAL).map(|val| (val.data as i32) as f32 / self._step_count )
+        self.read_register(Registers::XACTUAL).map(|val| (val.data as i32) as f32 / self._step_count)
     }
 
     /// set the current position
@@ -519,6 +519,6 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
 
     /// get the current target position (XTARGET)
     pub fn get_target(&mut self) -> Result<f32, Error<E>> {
-        self.read_register(Registers::XTARGET).map(|packet| packet.data as f32 / self._step_count )
+        self.read_register(Registers::XTARGET).map(|packet| packet.data as f32 / self._step_count)
     }
 }
