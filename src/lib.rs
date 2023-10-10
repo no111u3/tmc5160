@@ -416,12 +416,12 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
 
     /// check if the motor has reached the target position
     pub fn position_is_reached(&mut self) -> Result<bool, Error<E>> {
-        self.read_ramp_status().map(|packet| !packet.position_reached())
+        self.read_ramp_status().map(|packet| packet.position_reached())
     }
 
     /// check if the motor has reached the constant velocity
     pub fn velocity_is_reached(&mut self) -> Result<bool, Error<E>> {
-        self.read_ramp_status().map(|packet| !packet.velocity_reached())
+        self.read_ramp_status().map(|packet| packet.velocity_reached())
     }
 
     /// check if motor is at right limit
