@@ -51,6 +51,8 @@ pub struct DataPacket {
     pub status: SpiStatus,
     /// Data received from TMC5160
     pub data: u32,
+    /// debug
+    pub debug: [u8; 4]
 }
 
 impl fmt::Display for DataPacket {
@@ -191,7 +193,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
 
         self.cs.set_high().ok();
 
-        Ok(DataPacket { status: SpiStatus::from_bytes(buffer), data: u32::from_be_bytes(ret_val) })
+        Ok(DataPacket { status: SpiStatus::from_bytes(buffer), data: u32::from_be_bytes(ret_val), debug: ret_val })
     }
 
     /// write value to a specified register
@@ -211,7 +213,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
 
         self.cs.set_high().ok();
 
-        Ok(DataPacket { status: SpiStatus::from_bytes([buffer[0]]), data: u32::from_be_bytes(*val) })
+        Ok(DataPacket { status: SpiStatus::from_bytes([buffer[0]]), data: u32::from_be_bytes(*val), debug: *val })
     }
 
     /// enable the motor if the EN pin was specified
