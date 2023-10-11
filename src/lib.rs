@@ -181,21 +181,22 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         where
             T: Address + Copy,
     {
+
         self.cs.set_low().ok();
 
         let mut buffer = [reg.addr(), 0, 0, 0, 0];
 
-        self.spi.transfer(&mut buffer).map_err(Error::Spi)?;
+        let response = self.spi.transfer(&mut buffer).map_err(Error::Spi)?;
 
         self.cs.set_high().ok();
 
         let mut ret_val: [u8; 4] = [0; 4];
 
         for i in 0..4 {
-            ret_val[i] = buffer[i+1];
+            ret_val[i] = response[i+1];
         }
 
-        Ok(DataPacket { status: SpiStatus::from_bytes([buffer[0]]), data: u32::from_be_bytes(ret_val), debug: ret_val })
+        Ok(DataPacket { status: SpiStatus::from_bytes([response[0]]), data: u32::from_be_bytes(ret_val), debug: ret_val })
     }
 
     /// write value to a specified register
@@ -209,11 +210,11 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
 
         let mut buffer = [reg.addr() | 0x80, val[0], val[1], val[2], val[3]];
 
-        self.spi.transfer(&mut buffer).map_err(Error::Spi)?;
+        let response = self.spi.transfer(&mut buffer).map_err(Error::Spi)?;
 
         self.cs.set_high().ok();
 
-        Ok(DataPacket { status: SpiStatus::from_bytes([buffer[0]]), data: u32::from_be_bytes(*val), debug: ret_val })
+        Ok(DataPacket { status: SpiStatus::from_bytes([response[0]]), data: u32::from_be_bytes(*val), debug: ret_val })
     }
 
     /// enable the motor if the EN pin was specified
