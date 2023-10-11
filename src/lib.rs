@@ -213,7 +213,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
 
         self.cs.set_high().ok();
 
-        Ok(DataPacket { status: SpiStatus::from_bytes([response[0]]), data: u32::from_be_bytes(*val), debug: ret_val })
+        Ok(DataPacket { status: SpiStatus::from_bytes([response[0]]), data: 0, debug: ret_val })
     }
 
     /// enable the motor if the EN pin was specified
