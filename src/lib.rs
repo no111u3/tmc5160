@@ -52,7 +52,7 @@ pub struct DataPacket {
     /// Data received from TMC5160
     pub data: u32,
     /// debug
-    pub debug: [u8; 4],
+    pub debug: [u8; 5],
 }
 
 impl fmt::Display for DataPacket {
@@ -195,7 +195,13 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
             ret_val[i] = response[i + 1];
         }
 
-        Ok(DataPacket { status: SpiStatus::from_bytes([response[0]]), data: u32::from_be_bytes(ret_val), debug: ret_val })
+        let mut debug_val: [u8; 5] = [0; 5];
+
+        for i in 0..5 {
+            debug_val[i] = response[i];
+        }
+
+        Ok(DataPacket { status: SpiStatus::from_bytes([response[0]]), data: u32::from_be_bytes(ret_val), debug: debug_val })
     }
 
     /// write value to a specified register
@@ -205,9 +211,9 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     {
         self.cs.set_low().ok();
 
-        let debug_val = val.clone();
-
         let mut buffer = [reg.addr() | 0x80, val[0], val[1], val[2], val[3]];
+
+        let debug_val = buffer.clone();
 
         let response = self.spi.transfer(&mut buffer).map_err(Error::Spi)?;
 
@@ -250,8 +256,8 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
 
     /// clear G_STAT register
     pub fn clear_g_stat(&mut self) -> Result<DataPacket, Error<E>> {
-        //let mut value = 0b111_u32.to_be_bytes();
-        let mut value= (!0_u32).to_be_bytes();
+        let mut value = 0b111_u32.to_be_bytes();
+        //let mut value= (!0_u32).to_be_bytes();
         self.write_register(Registers::GCONF, &mut value)
     }
 
