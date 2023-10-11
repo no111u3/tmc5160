@@ -27,7 +27,7 @@ fn le_to_be(input: [u8; 4]) -> [u8; 4] {
     for i in 0..4 {
         output[4 - 1 - i] = input[i];
     }
-    input
+    output
 }
 
 /// SPI mode
@@ -208,12 +208,13 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         self.spi.transfer(&mut buffer).map_err(Error::Spi)?;
 
         //let mut val = data.to_be_bytes();
+        let ret_val = val.clone();
 
         self.spi.transfer(val).map_err(Error::Spi)?;
 
         self.cs.set_high().ok();
 
-        Ok(DataPacket { status: SpiStatus::from_bytes([buffer[0]]), data: u32::from_be_bytes(*val), debug: *val })
+        Ok(DataPacket { status: SpiStatus::from_bytes([buffer[0]]), data: u32::from_be_bytes(*val), debug: ret_val })
     }
 
     /// enable the motor if the EN pin was specified
