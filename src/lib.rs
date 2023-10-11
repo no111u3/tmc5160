@@ -70,6 +70,8 @@ pub struct Tmc5160<SPI, CS, EN> {
     pub v_max: f32,
     /// status register of the driver
     pub status: SpiStatus,
+    /// debug info of the last transmission
+    pub debug: [u8; 5],
     _clock: f32,
     _step_count: f32,
     _en_inverted: bool,
@@ -113,6 +115,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
             en: None,
             v_max: 0.0,
             status: SpiStatus::new(),
+            debug: [0; 5],
             _clock: 12000000.0,
             _step_count: 256.0,
             _en_inverted: false,
@@ -402,6 +405,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     pub fn read_gstat(&mut self) -> Result<GStat, Error<E>> {
         let packet = self.read_register(Registers::GSTAT)?;
         self.status = packet.status;
+        self.debug = packet.debug;
         Ok(GStat::from_bytes(packet.data.to_le_bytes()))
     }
 
