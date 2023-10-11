@@ -231,6 +231,66 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         Ok(DataPacket { status: SpiStatus::from_bytes([response[0]]), data: u32::from_be_bytes(ret_val), debug: debug_val })
     }
 
+    /// read a specified register according to the old implementation
+    pub fn old_read_register(&mut self, register: u8, buffer: &mut [u8; 5]) {
+        let mut read_cmd = [register, 0x00, 0x00, 0x00, 0x00];
+
+        self.cs.set_low().ok();
+        //usb_println(arrform!(64,"write buffer {:?}",read_cmd).as_str());
+        match self.spi.transfer(&mut read_cmd) {
+            Ok(r) => {
+                buffer[0] = r[0];
+                buffer[1] = r[1];
+                buffer[2] = r[2];
+                buffer[3] = r[3];
+                buffer[4] = r[4];
+                //usb_println(arrform!(64,"read answer {:?}",r).as_str());
+            }
+            Err(_err) => {
+                //usb_println(arrform!(64, "spi failed to read = {:?}", err).as_str());
+            }
+        }
+        self.cs.set_high().ok();
+
+        let mut read_cmd = [register, 0x00, 0x00, 0x00, 0x00];
+
+        self.cs.set_low().ok();
+        //usb_println(arrform!(64,"write buffer {:?}",read_cmd).as_str());
+        match self.spi.transfer(&mut read_cmd) {
+            Ok(r) => {
+                buffer[0] = r[0];
+                buffer[1] = r[1];
+                buffer[2] = r[2];
+                buffer[3] = r[3];
+                buffer[4] = r[4];
+                //usb_println(arrform!(64,"read answer {:?}",r).as_str());
+            }
+            Err(_err) => {
+                //usb_println(arrform!(64, "spi failed to read = {:?}", err).as_str());
+            }
+        }
+        self.cs.set_high().ok();
+    }
+
+    /// write value to a specified register according to the old implementation
+    pub fn old_write_register(&mut self, register: u8, payload: &[u8; 4]) -> u8 {
+        self.cs.set_low().ok();
+        let mut status_byte = 0;
+        let mut buffer: [u8; 5] = [register | 0x80, payload[0], payload[1], payload[2], payload[3]];
+        // usb_println(arrform!(64,"write buffer {:?}",buffer).as_str());
+        match self.spi.transfer(&mut buffer) {
+            Ok(r) => {
+                //usb_println(arrform!(64,"write answer {:?}",r).as_str());
+                status_byte = r[0];
+            }
+            Err(_err) => {
+                //usb_println(arrform!(64, "spi failed to write = {:?}", err).as_str());
+            }
+        }
+        self.cs.set_high().ok();
+        status_byte
+    }
+
     /// enable the motor if the EN pin was specified
     pub fn enable(&mut self) -> Result<(), Error<E>> {
         if let Some(pin) = &mut self.en {
