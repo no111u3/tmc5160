@@ -205,7 +205,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     {
         self.cs.set_low().ok();
 
-        let ret_val = val.clone();
+        let debug_val = val.clone();
 
         let mut buffer = [reg.addr() | 0x80, val[0], val[1], val[2], val[3]];
 
@@ -213,7 +213,13 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
 
         self.cs.set_high().ok();
 
-        Ok(DataPacket { status: SpiStatus::from_bytes([response[0]]), data: 0, debug: ret_val })
+        let mut ret_val: [u8; 4] = [0; 4];
+
+        for i in 0..4 {
+            ret_val[i] = response[i + 1];
+        }
+
+        Ok(DataPacket { status: SpiStatus::from_bytes([response[0]]), data: u32::from_be_bytes(ret_val), debug: debug_val })
     }
 
     /// enable the motor if the EN pin was specified
@@ -244,7 +250,8 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
 
     /// clear G_STAT register
     pub fn clear_g_stat(&mut self) -> Result<DataPacket, Error<E>> {
-        let mut value = 0b111_u32.to_le_bytes();
+        //let mut value = 0b111_u32.to_be_bytes();
+        let mut value= (!0_u32).to_be_bytes();
         self.write_register(Registers::GCONF, &mut value)
     }
 
