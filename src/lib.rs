@@ -183,17 +183,19 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     {
         self.cs.set_low().ok();
 
-        let mut buffer = [reg.addr() & 0x7f];
+        let mut buffer = [reg.addr(), 0, 0, 0, 0];
 
         self.spi.transfer(&mut buffer).map_err(Error::Spi)?;
 
-        let mut ret_val: [u8; 4] = [0; 4];
-
-        self.spi.transfer(&mut ret_val).map_err(Error::Spi)?;
-
         self.cs.set_high().ok();
 
-        Ok(DataPacket { status: SpiStatus::from_bytes(buffer), data: u32::from_be_bytes(ret_val), debug: ret_val })
+        let mut ret_val: [u8; 4] = [0; 4];
+
+        for i in 0..4 {
+            ret_val[i] = buffer[i+1];
+        }
+
+        Ok(DataPacket { status: SpiStatus::from_bytes([buffer[0]]), data: u32::from_be_bytes(ret_val), debug: ret_val })
     }
 
     /// write value to a specified register
@@ -203,14 +205,11 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     {
         self.cs.set_low().ok();
 
-        let mut buffer = [reg.addr() | 0x80];
-
-        self.spi.transfer(&mut buffer).map_err(Error::Spi)?;
-
-        //let mut val = data.to_be_bytes();
         let ret_val = val.clone();
 
-        self.spi.transfer(val).map_err(Error::Spi)?;
+        let mut buffer = [reg.addr() | 0x80, val[0], val[1], val[2], val[3]];
+
+        self.spi.transfer(&mut buffer).map_err(Error::Spi)?;
 
         self.cs.set_high().ok();
 
