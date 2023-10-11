@@ -245,7 +245,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
 
     /// clear G_STAT register
     pub fn clear_g_stat(&mut self) -> Result<DataPacket, Error<E>> {
-        let mut value = 0b111_u32.to_be_bytes();
+        let mut value = 0b111_u32.to_le_bytes();
         self.write_register(Registers::GCONF, &mut value)
     }
 
