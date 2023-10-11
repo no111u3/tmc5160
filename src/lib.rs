@@ -476,7 +476,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         Ok(GConf::from_bytes(packet.data.to_le_bytes()))
     }
 
-    /// read DRV_STATUS register
+    /// read RAMP_STAT register
     pub fn read_ramp_status(&mut self) -> Result<RampStat, Error<E>> {
         let packet = self.read_register(Registers::RAMP_STAT)?;
         self.status = packet.status;
@@ -497,7 +497,10 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         self.disable()?;
         let mut val = 0_u32.to_be_bytes();
         self.write_register(Registers::VSTART, &mut val)?;
-        let packet = self.write_register(Registers::VMAX, &mut val)?;
+        self.write_register(Registers::VMAX, &mut val)?;
+        // TODO: check how we can restart the movement afterwards
+        let mut position = self.get_position()?.to_be_bytes();
+        let packet = self.write_register(Registers::XTARGET, &mut position)?;
         self.status = packet.status;
         Ok(packet)
     }
