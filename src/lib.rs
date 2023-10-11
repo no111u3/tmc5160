@@ -441,7 +441,7 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     /// write value to RAMPMODE register
     pub fn set_rampmode(&mut self, val: RampMode) -> Result<DataPacket, Error<E>> {
         let mut value = (val as u32).to_be_bytes();
-        self.write_register(Registers::VSTOP, &mut value)
+        self.write_register(Registers::RAMPMODE, &mut value)
     }
 
     /// read offset register
