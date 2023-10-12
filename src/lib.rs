@@ -324,6 +324,13 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         self.write_register(Registers::GSTAT, &mut value)
     }
 
+    /// clear ENC_STATUS register
+    pub fn clear_enc_status(&mut self) -> Result<DataPacket, Error<E>> {
+        let mut value = 0b111_u32.to_be_bytes();
+        //let mut value= (!0_u32).to_be_bytes();
+        self.write_register(Registers::ENC_STATUS, &mut value)
+    }
+
     /// write value to SW_MODE register
     pub fn update_sw_mode(&mut self) -> Result<DataPacket, Error<E>> {
         let mut value = swap_bytes(self.sw_mode.into_bytes());
@@ -358,6 +365,12 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     pub fn update_pwm_conf(&mut self) -> Result<DataPacket, Error<E>> {
         let mut value = swap_bytes(self.pwm_conf.into_bytes());
         self.write_register(Registers::PWMCONF, &mut value)
+    }
+
+    /// write value to ENC_MODE register
+    pub fn update_enc_mode(&mut self) -> Result<DataPacket, Error<E>> {
+        let mut value = swap_bytes(self.enc_mode.into_bytes());
+        self.write_register(Registers::ENCMODE, &mut value)
     }
 
     /// write value to GLOBALSCALER register
@@ -481,6 +494,13 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         let packet = self.read_register(Registers::RAMP_STAT)?;
         self.status = packet.status;
         Ok(RampStat::from_bytes(packet.data.to_le_bytes()))
+    }
+
+    /// read ENC_STATUS register
+    pub fn read_enc_status(&mut self) -> Result<EncStatus, Error<E>> {
+        let packet = self.read_register(Registers::ENC_STATUS)?;
+        self.status = packet.status;
+        Ok(EncStatus::from_bytes(packet.data.to_le_bytes()))
     }
 
     /// set the position to 0 / home

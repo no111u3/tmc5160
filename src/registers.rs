@@ -431,6 +431,17 @@ pub struct EncMode {
     #[skip] _fill: B21,
 }
 
+/// ENC_STATUS Register
+#[derive(Clone, Copy)]
+#[allow(dead_code)]
+#[bitfield(bits = 32)]
+#[derive(ToValue)]
+pub struct EncStatus {
+    pub n_event: bool,
+    pub deviation_warn: bool,
+    #[skip] _fill: B30,
+}
+
 
 /// MSLUTSEL Register
 #[derive(Clone, Copy)]
