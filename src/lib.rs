@@ -591,6 +591,11 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         Ok(packet)
     }
 
+    /// get the latched position
+    pub fn get_latched_position(&mut self) -> Result<f32, Error<E>> {
+        self.read_register(Registers::XLATCH).map(|val| (val.data as i32) as f32 / self._step_count)
+    }
+
     /// get the current position
     pub fn get_position(&mut self) -> Result<f32, Error<E>> {
         self.read_register(Registers::XACTUAL).map(|val| (val.data as i32) as f32 / self._step_count)
