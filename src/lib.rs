@@ -134,8 +134,8 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
         }
     }
 
-    /// add an enable pin to the driver
-    pub fn en(mut self, en: EN) -> Self {
+    /// attach an enable pin to the driver
+    pub fn attach_en(mut self, en: EN) -> Self {
         self.en = Some(en);
         self
     }

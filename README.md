@@ -55,6 +55,10 @@ and to use the driver, implement the driver as shown below:
 
     // set up stepper driver
     let mut stepper_driver = Tmc5160::new(spi, nss);
+    // optionally, you could attach an EN pin, which then lets you use the `enable()` and `disable()` functions:
+    // let mut stepper_driver = Tmc5160::new(spi, nss).attach_en(en);
+    // you could also invert this pin (normally not required):
+    // let mut stepper_driver = Tmc5160::new(spi, nss).attach_en(en).en_inverted(true);
 
     // clear G_STAT register
     match stepper_driver.clear_g_stat(){
