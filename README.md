@@ -72,9 +72,9 @@ and to use the driver, implement the driver as shown below:
     // set G_CONF register
     stepper_driver
         .g_conf
-        .with_recalibrate(true)
-        .with_faststandstill(true)
-        .with_en_pwm_mode(true);
+        .set_recalibrate(true)
+        .set_faststandstill(true)
+        .set_en_pwm_mode(true);
     match stepper_driver.update_g_conf(){
         Ok(packet) => {
             sprintln!(in_out, "SPI status has been updated: {}", packet.status);
