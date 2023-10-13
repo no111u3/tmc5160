@@ -14,7 +14,7 @@ Put this into your `cargo.toml`:
 ```toml
 [dependencies]
 tmc5160 = { git = "https://github.com/hacknus/tmc5160-rs" }
-# required for the register configs to_u32() function
+# required for the register configs to_u32_le() function
 modular-bitfield-to-value = {git = "https://github.com/hacknus/modular-bitfield-to-value"}
 ```
 Add the following imports:
@@ -22,7 +22,7 @@ Add the following imports:
 use tmc5160::registers::*;
 use tmc5160::{DataPacket, Error, Tmc5160};
 
-// required for the to_u32() function.
+// required for the to_u32_le() function.
 use modular_bitfield_to_value::ToValue;
 ```
 
@@ -77,7 +77,7 @@ and to use the driver, implement the driver as shown below:
         .set_en_pwm_mode(true);
     match stepper_driver.update_g_conf(){
         Ok(packet) => {
-            sprintln!(in_out, "SPI status has been updated: {}", packet.status);
+            sprintln!(in_out, "SPI status has been updated: {}", packet.status.to_u32_le().unwrap_or(0));
         }
         Err(error) => {
             sprintln!(in_out, "Error for read status is {:?}", error);
@@ -87,10 +87,10 @@ and to use the driver, implement the driver as shown below:
     match stepper_driver.read_drv_status() {
         Ok(status) => {
             // either use fields of the register
-            sprintln!(in_out, "Stepper driver is in standstill: {}", status);
+            sprintln!(in_out, "Stepper driver is in standstill: {}", status.standstill());
             // or extract the u32 value from the register
-            sprintln!(in_out, "Stepper driver DRV_STATUS register is {}", status.to_u32().unwrap_or(0));
-            sprintln!(in_out, "SPI status has been updated: {}", stepper_driver.status);
+            sprintln!(in_out, "Stepper driver DRV_STATUS register is {}", status.to_u32_le().unwrap_or(0));
+            sprintln!(in_out, "SPI status has been updated: {}", stepper_driver.status.to_u32_le().unwrap_or(0));
         }
         Err(error) => {
             sprintln!(in_out, "Error for read status is {:?}", error);
@@ -100,8 +100,8 @@ and to use the driver, implement the driver as shown below:
     match stepper_driver.read_gstat() {
         Ok(status) => {
         Ok(status) => {
-            sprintln!(in_out, "Stepper GSTAT register is {}", status.to_u32().unwrap_or(0));
-            sprintln!(in_out, "SPI status has been updated: {}", stepper_driver.status);
+            sprintln!(in_out, "Stepper GSTAT register is {}", status.to_u32_le().unwrap_or(0));
+            sprintln!(in_out, "SPI status has been updated: {}", stepper_driver.status.to_u32_le().unwrap_or(0));
         }
         Err(error) => {
             sprintln!(in_out, "Error for read status is {:?}", error);
