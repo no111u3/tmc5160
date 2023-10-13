@@ -57,7 +57,14 @@ and to use the driver, implement the driver as shown below:
     let mut stepper_driver = Tmc5160::new(spi, nss);
 
     // clear G_STAT register
-    stepper_driver.clear_g_stat()?;
+    match stepper_driver.clear_g_stat(){
+        Ok(packet) => {
+            sprintln!(in_out, "SPI status has been updated: {}", packet.status.to_u32_le().unwrap_or(0));
+        }
+        Err(error) => {
+            sprintln!(in_out, "Error clearing GSTAT is {:?}", error);
+        }
+    }
 
     // read OFFSET
     match stepper_driver.read_offset() {
@@ -65,7 +72,7 @@ and to use the driver, implement the driver as shown below:
             sprintln!(in_out, "Stepper driver offset is {}", offset);
         }
         Err(error) => {
-            sprintln!(in_out, "Error for read status is {:?}", error);
+            sprintln!(in_out, "Error for reading offset is {:?}", error);
         }
     }
 
@@ -80,7 +87,7 @@ and to use the driver, implement the driver as shown below:
             sprintln!(in_out, "SPI status has been updated: {}", packet.status.to_u32_le().unwrap_or(0));
         }
         Err(error) => {
-            sprintln!(in_out, "Error for read status is {:?}", error);
+            sprintln!(in_out, "Error for updating GCONF is {:?}", error);
         }
     }
 
@@ -93,7 +100,7 @@ and to use the driver, implement the driver as shown below:
             sprintln!(in_out, "SPI status has been updated: {}", stepper_driver.status.to_u32_le().unwrap_or(0));
         }
         Err(error) => {
-            sprintln!(in_out, "Error for read status is {:?}", error);
+            sprintln!(in_out, "Error for reading DRV_STATUS is {:?}", error);
         }
     }
 
@@ -104,7 +111,7 @@ and to use the driver, implement the driver as shown below:
             sprintln!(in_out, "SPI status has been updated: {}", stepper_driver.status.to_u32_le().unwrap_or(0));
         }
         Err(error) => {
-            sprintln!(in_out, "Error for read status is {:?}", error);
+            sprintln!(in_out, "Error for reading GSTAT is {:?}", error);
         }
     }
 }
