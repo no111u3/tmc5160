@@ -110,7 +110,6 @@ and to use the driver, implement the driver as shown below:
 
     match stepper_driver.read_gstat() {
         Ok(status) => {
-        Ok(status) => {
             sprintln!(in_out, "Stepper GSTAT register is {}", status.to_u32_le().unwrap_or(0));
             sprintln!(in_out, "SPI status has been updated: {}", stepper_driver.status.to_u32_le().unwrap_or(0));
         }
