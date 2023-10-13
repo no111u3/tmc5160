@@ -582,9 +582,9 @@ impl<SPI, CS, EN, E> Tmc5160<SPI, CS, EN>
     }
 
     /// move to a specific location
-    pub fn move_to(&mut self, target_signed: i32) -> Result<DataPacket, Error<E>> {
+    pub fn move_to(&mut self, target: f32) -> Result<DataPacket, Error<E>> {
         self.enable()?;
-        let target = target_signed * self._step_count as i32;
+        let target = (target * self._step_count) as i32;
         let mut val = target.to_be_bytes();
         let packet = self.write_register(Registers::XTARGET, &mut val)?;
         self.status = packet.status;
