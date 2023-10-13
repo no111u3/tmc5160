@@ -1,4 +1,4 @@
-//! Test the formated output
+//! Test the formatted output
 //!
 //! This example hasn't a special requires
 #![deny(unsafe_code)]
@@ -7,7 +7,7 @@
 
 extern crate panic_semihosting;
 
-// required for the to_u32() function.
+// required for the to_u32_le() function.
 use modular_bitfield_to_value::ToValue;
 
 use cortex_m::asm;
